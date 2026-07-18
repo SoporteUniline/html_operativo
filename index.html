@@ -82,7 +82,7 @@
     <div class="scope">
       <button id="sc-todo" class="on" onclick="setScope('todo')">Todo</button>
       <button id="sc-culatas" onclick="setScope('culatas')">Culatas</button>
-      <button id="sc-resto" onclick="setScope('resto')">Sin culatas</button>
+      <button id="sc-resto" onclick="setScope('resto')">Motor</button>
     </div>
     <div class="btns">
       <button class="pbtn pbtn-carta" onclick="descargarPDF('carta')">📄 PDF Carta</button>
@@ -218,9 +218,8 @@ function renderCotizacion(c){
       h+='</div></div>';
       if(item.actividades && item.actividades.length>0){
         item.actividades.forEach(function(a){
-          h+='<div class="rw" style="padding-left:16px"><div class="rn" style="font-size:14px">• '+(a.actividad||'-')+'</div>';
-          if(a.medida)h+='<span class="chip chip-m">'+a.medida+'</span>';
-          h+='</div>';
+          h+='<div class="rw" style="padding-left:16px;justify-content:flex-start"><div class="rn" style="flex:none;font-size:14px">• '+(a.actividad||'-')
+            +(a.medida?' <span class="chip chip-m">'+a.medida+'</span>':'')+'</div></div>';
         });
       }
     });
@@ -290,18 +289,15 @@ function dibujarPDF(doc,W,c,esCarta){
       txt(nom,M,y+(esCarta?5:3),'#1e2a3a',fs.body,false);
       if(item.comentario){
         var nw=doc.getTextWidth(nom);
-        doc.setFontSize(fs.small);doc.setFont('helvetica','normal');
-        var cLines=doc.splitTextToSize('— '+item.comentario,W-M*2-nw-(esCarta?4:1.5));
-        var gc=hexRgb(gray);doc.setTextColor(gc[0],gc[1],gc[2]);
-        if(cLines.length===1){doc.text(cLines[0],M+nw+(esCarta?3:1),y+(esCarta?5:3))}
-        else{y+=esCarta?6:3;doc.text(cLines,M+(esCarta?4:1.5),y+(esCarta?4:2.5));y+=(cLines.length-1)*(esCarta?5:2.8)}
+        txt('— '+item.comentario,M+nw+(esCarta?3:1),y+(esCarta?5:3),gray,fs.small,false);
       }
       y+=esCarta?8:4;
       if(item.actividades && item.actividades.length>0){
         item.actividades.forEach(function(a){
           salto(260);
-          txt('• '+(a.actividad||'-'),M+(esCarta?4:1.5),y+(esCarta?4.5:2.7),navy,fs.small,false);
-          if(a.medida)txt(a.medida,W-M,y+(esCarta?4.5:2.7),red,fs.small,true,'right');
+          var nAct='• '+(a.actividad||'-');
+          txt(nAct,M+(esCarta?4:1.5),y+(esCarta?4.5:2.7),navy,fs.small,false);
+          if(a.medida){var wAct=doc.getTextWidth(nAct);txt(a.medida,M+(esCarta?4:1.5)+wAct+(esCarta?3:1),y+(esCarta?4.5:2.7),red,fs.small,true)}
           y+=esCarta?6:3;
         });
         y+=esCarta?1:0.5;
@@ -347,14 +343,13 @@ function dibujarPDF(doc,W,c,esCarta){
         }else if(p.malEstado){
           txt('✗ '+p.malEstado,W-M,y+(esCarta?5:3),bad,fs.small,true,'right');
         }
-        y+=nomLines.length*(esCarta?6:3.2);
         var nota=p.notas||p.comentario||'';
         if(nota){
-          doc.setFontSize(fs.tiny+0.5);doc.setFont('helvetica','italic');
-          var nLines=doc.splitTextToSize('— '+nota,W-M*2);
-          var gc2=hexRgb(gray);doc.setTextColor(gc2[0],gc2[1],gc2[2]);
-          nLines.forEach(function(l){salto(260);doc.text(l,M+(esCarta?3:1),y+(esCarta?4:2.5));y+=esCarta?5:2.8});
+          doc.setFontSize(fs.body);doc.setFont('helvetica','normal');
+          var nomW=doc.getTextWidth(nomLines[0]||'');
+          txt('— '+nota,M+nomW+(esCarta?3:1),y+(esCarta?5:3),gray,fs.tiny+0.5,false);
         }
+        y+=nomLines.length*(esCarta?6:3.2);
         y+=esCarta?3:1.5;
       });
       y+=esCarta?3:1.5;
@@ -439,19 +434,21 @@ function descargarImagen(){
           txt(nom,M,y+12,'#1e2a3a',15,false);
           if(item.comentario){
             var nw=medir(nom,15,false);
-            var maxC=W-M*2-nw-8;
-            if(medir('— '+item.comentario,12,false)<=maxC){
-              txt('— '+item.comentario,M+nw+8,y+12,gray,12,false);
-              y+=22;
-            }else{
-              y+=20;
-              y=wrapTxt('— '+item.comentario,M+8,y+10,gray,12,false,W-M*2-8,16)-10+6;
-            }
-          }else y+=22;
+            txt('— '+item.comentario,M+nw+8,y+12,gray,12,false);
+          }
+          y+=22;
           if(item.actividades && item.actividades.length>0){
             item.actividades.forEach(function(a){
-              txt('• '+(a.actividad||'-'),M+14,y+12,navy,13,false);
-              if(a.medida)chip(a.medida,W-M,y-2,red,'#fff5f5');
+              var nAct='• '+(a.actividad||'-');
+              txt(nAct,M+14,y+12,navy,13,false);
+              if(a.medida){
+                var wAct=medir(nAct,13,false);
+                var cw=medir(a.medida,13,true)+16;
+                ctx.fillStyle='#fff5f5';
+                if(ctx.roundRect){ctx.beginPath();ctx.roundRect(M+14+wAct+8,y-2,cw,20,5);ctx.fill()}
+                else ctx.fillRect(M+14+wAct+8,y-2,cw,20);
+                txt(a.medida,M+14+wAct+16,y+13,red,13,true);
+              }
               y+=22;
             });
             y+=2;
@@ -481,7 +478,7 @@ function descargarImagen(){
             if(p.malEstado)xR-=chip('✗ '+p.malEstado,xR,yTop+2,bad,badbg)+5;
             if(p.buenEstado)chip('✓ '+p.buenEstado,xR,yTop+2,ok,okbg);
             var nota=p.notas||p.comentario||'';
-            if(nota){y=wrapTxt('— '+nota,M+8,y+12,gray,12,false,W-M*2-8,16)-12+4;}
+            if(nota)txt('— '+nota,M+medir(nom,15,false)+8,yTop+14,gray,12,false);
             y+=10;
           });
           y+=6;
