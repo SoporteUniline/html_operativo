@@ -34,6 +34,7 @@
   .s{margin-bottom:14px}
   .st{font-size:12px;text-transform:uppercase;letter-spacing:1.5px;color:var(--r);font-weight:800;padding-bottom:3px;border-bottom:2px solid #f09595;display:inline-block;margin-bottom:4px}
   .st.pe{color:#92400e;border-bottom-color:#fac775}
+  .culata-val{display:inline-block;margin-left:8px;padding:2px 8px;border-radius:5px;background:#fff5f5;border:1px solid var(--b);color:var(--r);font-size:12px;font-weight:800;letter-spacing:0;text-transform:none;vertical-align:1px}
   .rw{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;gap:10px}
   .rn{font-size:15px;color:#1e2a3a;flex:1;line-height:1.35}
   .rn .cm{color:var(--m);font-size:12.5px;font-weight:400}
@@ -159,6 +160,31 @@ function soloManoObra(c){
   return Object.assign({},c,{secciones:secs});
 }
 function esCulatas(t){return /culata/i.test(String(t||''))}
+function obtenerValorCulata(c){
+  if(!c)return '';
+  var fuentes=[c,c.datos,c.cabecera,c.orden,c.registro];
+  for(var i=0;i<fuentes.length;i++){
+    var obj=fuentes[i];
+    if(!obj || typeof obj!=='object' || Array.isArray(obj))continue;
+    var claves=Object.keys(obj);
+    for(var j=0;j<claves.length;j++){
+      var clave=String(claves[j]).trim().toLowerCase();
+      if(clave==='culata'){
+        var valor=obj[claves[j]];
+        if(valor!==null && valor!==undefined && String(valor).trim()!=='')return String(valor).trim();
+      }
+    }
+  }
+  return '';
+}
+function escaparHtml(v){
+  return String(v===null||v===undefined?'':v)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;')
+    .replace(/'/g,'&#039;');
+}
 function filtrarScope(c,scope){
   if(!c || scope==='todo')return c;
   var secs=c.secciones.filter(function(s){
@@ -209,7 +235,11 @@ function renderCotizacion(c){
   document.getElementById('cotMotor').textContent=c.motor||'-';
   var h='';
   c.secciones.forEach(function(sec){
-    h+='<div class="s"><div class="st">'+sec.titulo+'</div>';
+    var tituloSec=sec.titulo||'';
+    var valorCulata=esCulatas(tituloSec)?obtenerValorCulata(c):'';
+    h+='<div class="s"><div class="st">'+escaparHtml(tituloSec);
+    if(valorCulata)h+='<span class="culata-val">'+escaparHtml(valorCulata)+'</span>';
+    h+='</div>';
     sec.items.forEach(function(item){
       var qty=item.manejaCantidad&&(item.cantidad||1)>1?'<span class="qty">'+item.cantidad+'×</span>':'';
       h+='<div class="rw"><div class="rn">'+qty+item.nombre;
@@ -296,8 +326,13 @@ function descargarImagen(){
       txt('MOTOR',W/2+14,y+18,navy,11,true);txt(c.motor,W/2+14,y+40,'#1e2a3a',13,false);
       y+=64;
       c.secciones.forEach(function(sec){
-        txt(sec.titulo.toUpperCase(),M,y+12,red,15,true);
-        ctx.fillStyle='#f09595';ctx.fillRect(M,y+17,medir(sec.titulo.toUpperCase(),15,true)+6,2);
+        var tituloSec=String(sec.titulo||'');
+        var tituloMay=tituloSec.toUpperCase();
+        var valorCulata=esCulatas(tituloSec)?obtenerValorCulata(c):'';
+        txt(tituloMay,M,y+12,red,15,true);
+        var anchoTitulo=medir(tituloMay,15,true);
+        ctx.fillStyle='#f09595';ctx.fillRect(M,y+17,anchoTitulo+6,2);
+        if(valorCulata)chipL(valorCulata,M+anchoTitulo+14,y-4,red,'#fff5f5');
         y+=28;
         sec.items.forEach(function(item){
           var qty=item.manejaCantidad&&(item.cantidad||1)>1?item.cantidad+'× ':'';
