@@ -1,468 +1,2890 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Orden de Trabajo | TornoAuto</title>
-<style>
-  :root{--n:#1a3057;--r:#c8102e;--nl:#edf1f7;--m:#7a8899;--b:#dde3ec;--ok:#065f46;--okbg:#e1f5ee;--bad:#991b1b;--badbg:#fcebeb}
-  *{margin:0;padding:0;box-sizing:border-box}
-  body{font-family:-apple-system,system-ui,'Segoe UI',sans-serif;background:#e5ddd5;display:flex;flex-direction:column;align-items:center;padding:24px;gap:20px}
-  .loader{border:4px solid #f3f4f6;border-top:4px solid var(--n);border-radius:50%;width:44px;height:44px;animation:spin .8s linear infinite;margin:40px auto}
-  @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
-  .msg-box{width:100%;max-width:750px;background:#fff;border-radius:16px;padding:50px;box-shadow:0 2px 16px rgba(0,0,0,.1);text-align:center}
-  .msg-box p{font-size:16px;color:var(--m)}
-  .msg-error{color:var(--r)!important;font-weight:700;font-size:22px!important}
-  .c{width:100%;max-width:640px;background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,.12);display:none}
-  .hd{background:#fff;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid var(--n)}
-  .lg-img{height:56px;width:auto;display:block}
-  .cn{text-align:right}
-  .cn small{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--m)}
-  .cn strong{font-size:28px;font-weight:900;display:block;line-height:1.1;color:var(--r)}
-  .cl{display:flex;background:var(--nl);border-bottom:1px solid var(--b)}
-  .cl div{flex:1;padding:10px 24px}
-  .cl div:first-child{border-right:1px solid var(--b)}
-  .cl span{display:block;font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:var(--n);font-weight:700;margin-bottom:2px}
-  .cl strong{font-size:15px;color:#1e2a3a}
-  .bar{padding:14px 24px 0;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
-  .scope{display:flex;gap:6px;background:var(--nl);border:1px solid var(--b);border-radius:10px;padding:4px;width:max-content}
-  .scope button{border:none;background:transparent;color:var(--n);font-size:13px;font-weight:700;padding:7px 14px;border-radius:7px;cursor:pointer}
-  .scope button.on{background:var(--n);color:#fff}
-  .pbtn{border:none;border-radius:8px;color:#fff;font-size:13px;font-weight:700;padding:9px 16px;cursor:pointer;display:flex;align-items:center;gap:6px;box-shadow:0 2px 6px rgba(0,0,0,.15);background:#b45309}
-  .pbtn:active{transform:scale(.97)}
-  .bd{padding:12px 24px 20px}
-  .s{margin-bottom:14px}
-  .st{font-size:12px;text-transform:uppercase;letter-spacing:1.5px;color:var(--r);font-weight:800;padding-bottom:3px;border-bottom:2px solid #f09595;display:inline-block;margin-bottom:4px}
-  .st.pe{color:#92400e;border-bottom-color:#fac775}
-  .culata-val{display:inline-block;margin-left:8px;padding:2px 8px;border-radius:5px;background:#fff5f5;border:1px solid var(--b);color:var(--r);font-size:12px;font-weight:800;letter-spacing:0;text-transform:none;vertical-align:1px}
-  .rw{display:flex;justify-content:space-between;align-items:baseline;padding:6px 0;gap:10px}
-  .rn{font-size:15px;color:#1e2a3a;flex:1;line-height:1.35}
-  .rn .cm{color:var(--m);font-size:12.5px;font-weight:400}
-  .chip{font-size:12.5px;font-weight:700;white-space:nowrap;border-radius:5px;padding:1px 8px}
-  .chip-m{color:var(--r);background:#fff5f5;border:1px solid var(--b)}
-  .chip-ok{color:var(--ok);background:var(--okbg)}
-  .chip-bad{color:var(--bad);background:var(--badbg)}
-  .chips{display:flex;gap:5px;align-items:center}
-  .pe-cat{font-size:10.5px;text-transform:uppercase;letter-spacing:1.2px;color:var(--m);font-weight:700;margin:10px 0 2px;display:flex;align-items:center;gap:8px}
-  .pe-cat::after{content:'';flex:1;height:1px;background:var(--b)}
-  .qty{color:#b45309;font-weight:800;margin-right:4px}
-  .ft{background:var(--nl);padding:12px;text-align:center;font-size:12px;color:var(--m)}
-  @media(max-width:480px){
-    body{padding:12px}
-    .hd{padding:12px 16px}
-    .lg-img{height:44px}
-    .cn strong{font-size:22px}
-    .cl div{padding:8px 16px}
-    .cl strong{font-size:13px}
-    .bar{padding:12px 16px 0}
-    .bd{padding:10px 16px 16px}
-    .rn{font-size:14px}
-  }
-</style>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>
+    Orden de Trabajo | TornoAuto
+  </title>
+
+  <style>
+    :root {
+      --n: #1a3057;
+      --r: #c8102e;
+      --nl: #edf1f7;
+      --m: #7a8899;
+      --b: #dde3ec;
+      --ok: #065f46;
+      --okbg: #e1f5ee;
+      --bad: #991b1b;
+      --badbg: #fcebeb;
+      --culata-bg: #fff5f5;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
+
+      background: #e5ddd5;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      padding: 24px;
+      gap: 20px;
+    }
+
+    .loader {
+      border: 4px solid #f3f4f6;
+      border-top: 4px solid var(--n);
+      border-radius: 50%;
+
+      width: 44px;
+      height: 44px;
+
+      animation: spin 0.8s linear infinite;
+
+      margin: 40px auto;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .msg-box {
+      width: 100%;
+      max-width: 750px;
+
+      background: #fff;
+
+      border-radius: 16px;
+
+      padding: 50px;
+
+      box-shadow:
+        0 2px 16px
+        rgba(0, 0, 0, 0.1);
+
+      text-align: center;
+    }
+
+    .msg-box p {
+      font-size: 16px;
+      color: var(--m);
+    }
+
+    .msg-error {
+      color: var(--r) !important;
+      font-weight: 700;
+      font-size: 22px !important;
+    }
+
+    .c {
+      width: 100%;
+      max-width: 640px;
+
+      background: #fff;
+
+      border-radius: 16px;
+      overflow: hidden;
+
+      box-shadow:
+        0 4px 24px
+        rgba(0, 0, 0, 0.12);
+
+      display: none;
+    }
+
+    .hd {
+      background: #fff;
+
+      padding: 16px 24px;
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      border-bottom:
+        3px solid var(--n);
+    }
+
+    .lg-img {
+      height: 56px;
+      width: auto;
+      display: block;
+    }
+
+    .cn {
+      text-align: right;
+    }
+
+    .cn small {
+      font-size: 11px;
+
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+
+      color: var(--m);
+    }
+
+    .cn strong {
+      font-size: 28px;
+      font-weight: 900;
+
+      display: block;
+
+      line-height: 1.1;
+
+      color: var(--r);
+    }
+
+    .cl {
+      display: flex;
+
+      background: var(--nl);
+
+      border-bottom:
+        1px solid var(--b);
+    }
+
+    .cl div {
+      flex: 1;
+
+      padding: 10px 24px;
+
+      min-width: 0;
+    }
+
+    .cl div:first-child {
+      border-right:
+        1px solid var(--b);
+    }
+
+    .cl span {
+      display: block;
+
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+
+      color: var(--n);
+
+      font-weight: 700;
+
+      margin-bottom: 2px;
+    }
+
+    .cl strong {
+      display: block;
+
+      font-size: 15px;
+
+      color: #1e2a3a;
+
+      line-height: 1.35;
+
+      word-break: break-word;
+    }
+
+    .bar {
+      padding: 14px 24px 0;
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      gap: 10px;
+
+      flex-wrap: wrap;
+    }
+
+    .scope {
+      display: flex;
+
+      gap: 6px;
+
+      background: var(--nl);
+
+      border:
+        1px solid var(--b);
+
+      border-radius: 10px;
+
+      padding: 4px;
+
+      width: max-content;
+    }
+
+    .scope button {
+      border: none;
+
+      background: transparent;
+
+      color: var(--n);
+
+      font-size: 13px;
+      font-weight: 700;
+
+      padding: 7px 14px;
+
+      border-radius: 7px;
+
+      cursor: pointer;
+    }
+
+    .scope button.on {
+      background: var(--n);
+      color: #fff;
+    }
+
+    .pbtn {
+      border: none;
+      border-radius: 8px;
+
+      color: #fff;
+      background: #b45309;
+
+      font-size: 13px;
+      font-weight: 700;
+
+      padding: 9px 16px;
+
+      cursor: pointer;
+
+      display: flex;
+      align-items: center;
+
+      gap: 6px;
+
+      box-shadow:
+        0 2px 6px
+        rgba(0, 0, 0, 0.15);
+    }
+
+    .pbtn:active {
+      transform: scale(0.97);
+    }
+
+    .bd {
+      padding: 12px 24px 20px;
+    }
+
+    .s {
+      margin-bottom: 14px;
+    }
+
+    .st {
+      display: inline-block;
+
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+
+      color: var(--r);
+
+      font-weight: 800;
+
+      padding-bottom: 3px;
+      margin-bottom: 4px;
+
+      border-bottom:
+        2px solid #f09595;
+    }
+
+    .st.pe {
+      color: #92400e;
+
+      border-bottom-color:
+        #fac775;
+    }
+
+    .rw {
+      display: flex;
+
+      justify-content: space-between;
+      align-items: flex-start;
+
+      padding: 6px 0;
+
+      gap: 10px;
+    }
+
+    .rn {
+      min-width: 0;
+      flex: 1;
+
+      font-size: 15px;
+
+      color: #1e2a3a;
+
+      line-height: 1.35;
+
+      word-break: break-word;
+    }
+
+    .concept-line {
+      display: flex;
+      align-items: baseline;
+
+      gap: 7px;
+
+      flex-wrap: wrap;
+    }
+
+    .concept-name {
+      min-width: 0;
+    }
+
+    .rn .cm {
+      color: var(--m);
+
+      font-size: 12.5px;
+      font-weight: 400;
+    }
+
+    .chip {
+      display: inline-block;
+
+      font-size: 12.5px;
+      font-weight: 700;
+
+      white-space: nowrap;
+
+      border-radius: 5px;
+
+      padding: 1px 8px;
+    }
+
+    .chip-m {
+      color: var(--r);
+
+      background:
+        var(--culata-bg);
+
+      border:
+        1px solid var(--b);
+    }
+
+    .chip-ok {
+      color: var(--ok);
+      background: var(--okbg);
+    }
+
+    .chip-bad {
+      color: var(--bad);
+      background: var(--badbg);
+    }
+
+    .chips {
+      display: flex;
+      gap: 5px;
+      align-items: center;
+
+      flex-shrink: 0;
+    }
+
+    .pe-cat {
+      font-size: 10.5px;
+
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+
+      color: var(--m);
+
+      font-weight: 700;
+
+      margin: 10px 0 2px;
+
+      display: flex;
+      align-items: center;
+
+      gap: 8px;
+    }
+
+    .pe-cat::after {
+      content: "";
+
+      flex: 1;
+
+      height: 1px;
+
+      background: var(--b);
+    }
+
+    .qty {
+      color: #b45309;
+      font-weight: 800;
+
+      margin-right: 4px;
+    }
+
+    .ft {
+      background: var(--nl);
+
+      padding: 12px;
+
+      text-align: center;
+
+      font-size: 12px;
+
+      color: var(--m);
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 12px;
+      }
+
+      .hd {
+        padding: 12px 16px;
+      }
+
+      .lg-img {
+        height: 44px;
+        max-width: 58%;
+        object-fit: contain;
+      }
+
+      .cn strong {
+        font-size: 22px;
+      }
+
+      .cl {
+        flex-direction: column;
+      }
+
+      .cl div {
+        padding: 8px 16px;
+      }
+
+      .cl div:first-child {
+        border-right: none;
+
+        border-bottom:
+          1px solid var(--b);
+      }
+
+      .cl strong {
+        font-size: 13px;
+      }
+
+      .bar {
+        padding: 12px 16px 0;
+      }
+
+      .bd {
+        padding: 10px 16px 16px;
+      }
+
+      .rn {
+        font-size: 14px;
+      }
+
+      .scope {
+        width: 100%;
+      }
+
+      .scope button {
+        flex: 1;
+        padding-left: 8px;
+        padding-right: 8px;
+      }
+
+      .pbtn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
 </head>
+
 <body>
-<div class="msg-box" id="msgBox">
-  <div class="loader"></div>
-  <p>Cargando orden de trabajo...</p>
-</div>
-<div class="c" id="cotCard">
-  <div class="hd">
-    <img src="https://res.cloudinary.com/djtjnoajc/image/upload/v1778773818/tornoauto-imagotipo-_-slogan-full-color-rgb-900px-w-72ppi_ovzkdr.png" alt="TornoAuto" class="lg-img" id="logoImg" crossorigin="anonymous">
-    <div class="cn"><small>Orden de Trabajo</small><strong id="cotFolio">#---</strong></div>
+
+  <div
+    class="msg-box"
+    id="msgBox"
+  >
+    <div class="loader"></div>
+
+    <p>
+      Cargando orden de trabajo...
+    </p>
   </div>
-  <div class="cl">
-    <div><span>Cliente</span><strong id="cotCliente">-</strong></div>
-    <div><span>Motor</span><strong id="cotMotor">-</strong></div>
-  </div>
-  <div class="bar">
-    <div class="scope">
-      <button id="sc-todo" class="on" onclick="setScope('todo')">Todo</button>
-      <button id="sc-culatas" onclick="setScope('culatas')">Culatas</button>
-      <button id="sc-resto" onclick="setScope('resto')">Motor</button>
+
+
+  <div
+    class="c"
+    id="cotCard"
+  >
+
+    <div class="hd">
+
+      <img
+        src="https://res.cloudinary.com/djtjnoajc/image/upload/v1778773818/tornoauto-imagotipo-_-slogan-full-color-rgb-900px-w-72ppi_ovzkdr.png"
+        alt="TornoAuto"
+        class="lg-img"
+        id="logoImg"
+        crossorigin="anonymous"
+      >
+
+      <div class="cn">
+        <small>
+          Orden de Trabajo
+        </small>
+
+        <strong id="cotFolio">
+          #---
+        </strong>
+      </div>
+
     </div>
-    <button class="pbtn" onclick="descargarImagen()">🖼 Imagen</button>
+
+
+    <div class="cl">
+
+      <div>
+        <span>
+          Cliente
+        </span>
+
+        <strong id="cotCliente">
+          -
+        </strong>
+      </div>
+
+      <div>
+        <span>
+          Motor
+        </span>
+
+        <strong id="cotMotor">
+          -
+        </strong>
+      </div>
+
+    </div>
+
+
+    <div class="bar">
+
+      <div class="scope">
+
+        <button
+          id="sc-todo"
+          class="on"
+          onclick="setScope('todo')"
+        >
+          Todo
+        </button>
+
+        <button
+          id="sc-culatas"
+          onclick="setScope('culatas')"
+        >
+          Culatas
+        </button>
+
+        <button
+          id="sc-resto"
+          onclick="setScope('resto')"
+        >
+          Motor
+        </button>
+
+      </div>
+
+
+      <button
+        class="pbtn"
+        onclick="descargarImagen()"
+      >
+        🖼 Imagen
+      </button>
+
+    </div>
+
+
+    <div
+      class="bd"
+      id="cotBody"
+    ></div>
+
+
+    <div class="ft">
+      Documento interno de trabajo · TornoAuto
+    </div>
+
   </div>
-  <div class="bd" id="cotBody"></div>
-  <div class="ft">Documento interno de trabajo · TornoAuto</div>
-</div>
-<script>
-var API_URL = 'https://script.google.com/macros/s/AKfycbzVFzrXZnC-aJHuXV3t_9z27QKkeLuWY-ysFDrAdWW2uJrFB-OTJWxrI76_6hQWTaYB/exec';
-var cotData=null,SCOPE='todo',LOGO_URL='https://res.cloudinary.com/djtjnoajc/image/upload/v1778773818/tornoauto-imagotipo-_-slogan-full-color-rgb-900px-w-72ppi_ovzkdr.png',LOGO_DATA=null,LOGO_W=900,LOGO_H=200;
-function getFolio(){
-  var p=new URLSearchParams(window.location.search);
-  return p.get('folio')||p.get('f')||'';
-}
-function precargarLogo(cb){
-  if(LOGO_DATA){cb();return}
-  var img=new Image();img.crossOrigin='anonymous';
-  img.onload=function(){
-    LOGO_W=img.naturalWidth;LOGO_H=img.naturalHeight;
-    var cv=document.createElement('canvas');cv.width=LOGO_W;cv.height=LOGO_H;
-    cv.getContext('2d').drawImage(img,0,0);
-    try{LOGO_DATA=cv.toDataURL('image/png')}catch(e){LOGO_DATA=null}
-    cb();
-  };
-  img.onerror=function(){cb()};
-  img.src=LOGO_URL;
-}
-window.onload=function(){
-  precargarLogo(function(){});
-  var folio=getFolio();
-  if(!folio){
-    document.getElementById('msgBox').innerHTML='<p class="msg-error">❌ No se proporcionó folio</p><p style="margin-top:10px;font-size:13px">Usa: ?folio=XXXXXX</p>';
-    return;
-  }
-  fetch(API_URL+'?folio='+encodeURIComponent(folio))
-    .then(function(r){return r.json()})
-    .then(function(r){
-      document.getElementById('msgBox').style.display='none';
-      if(r.success){cotData=ordenarCotizacion(r.cotizacion);renderCotizacion(datosScope())}
-      else{
-        document.getElementById('msgBox').style.display='block';
-        document.getElementById('msgBox').innerHTML='<p class="msg-error">❌ '+(r.error||'Error desconocido')+'</p>';
-      }
-    })
-    .catch(function(err){
-      document.getElementById('msgBox').innerHTML='<p class="msg-error">❌ '+err.message+'</p>';
-    });
-};
-function numOrden(v,fallback){
-  var n=parseFloat(String(v===null||v===undefined?'':v).replace(',','.'));
-  return isNaN(n)?fallback:n;
-}
-function ordenarCotizacion(c){
-  if(!c || !Array.isArray(c.secciones))return c;
-  var copia=Object.assign({},c);
-  copia.secciones=c.secciones.slice().sort(function(a,b){
-    var oa=numOrden(a.ordenCategoria,9999);
-    var ob=numOrden(b.ordenCategoria,9999);
-    if(oa!==ob)return oa-ob;
-    return String(a.titulo||'').localeCompare(String(b.titulo||''));
-  }).map(function(sec){
-    var secCopia=Object.assign({},sec);
-    if(Array.isArray(secCopia.items)){
-      secCopia.items=secCopia.items.slice().sort(function(a,b){
-        var oa=numOrden(a.ordenTarifa,9999);
-        var ob=numOrden(b.ordenTarifa,9999);
-        if(oa!==ob)return oa-ob;
-        var na=String(a.nombre||a.repuesto||a.nr||'');
-        var nb=String(b.nombre||b.repuesto||b.nr||'');
-        return na.localeCompare(nb);
-      });
+
+
+  <script>
+
+    /*
+     * NUEVA URL DE LA API.
+     */
+    var API_URL =
+      'https://script.google.com/macros/s/AKfycby_YYUOvjEDU0NgzUWmS6vHWCjaHosn-jZRPqIML9flpFKc1NNPTkl7jH5NvOwSZeec/exec';
+
+
+    var LOGO_URL =
+      'https://res.cloudinary.com/djtjnoajc/image/upload/v1778773818/tornoauto-imagotipo-_-slogan-full-color-rgb-900px-w-72ppi_ovzkdr.png';
+
+
+    var cotData = null;
+    var SCOPE = 'todo';
+
+    var LOGO_DATA = null;
+    var LOGO_W = 900;
+    var LOGO_H = 200;
+
+
+    /*
+     * OBTENER FOLIO DESDE LA URL.
+     *
+     * Ejemplo:
+     * pagina.html?folio=013493
+     */
+    function getFolio() {
+      var parametros =
+        new URLSearchParams(
+          window.location.search
+        );
+
+      return (
+        parametros.get('folio') ||
+        parametros.get('f') ||
+        ''
+      );
     }
-    return secCopia;
-  });
-  return copia;
-}
-function soloManoObra(c){
-  if(!c)return null;
-  var secs=c.secciones.filter(function(s){return s.tipo==='manoObra'});
-  return Object.assign({},c,{secciones:secs});
-}
-function esCulatas(t){return /culata/i.test(String(t||''))}
-function obtenerValorCulata(c, sec){
-  // Primero buscar dentro de los conceptos de la sección
-  if(sec && Array.isArray(sec.items)){
-    for(var i = 0; i < sec.items.length; i++){
-      var item = sec.items[i];
 
-      if(!item || typeof item !== 'object') continue;
 
-      var claves = Object.keys(item);
+    /*
+     * PREPARAR LOGOTIPO PARA LA
+     * DESCARGA DE LA IMAGEN.
+     */
+    function precargarLogo(callback) {
+      if (LOGO_DATA) {
+        callback();
+        return;
+      }
 
-      for(var j = 0; j < claves.length; j++){
-        var claveOriginal = claves[j];
+      var img =
+        new Image();
 
-        var clave = String(claveOriginal)
-          .trim()
-          .toLowerCase()
-          .replace(/[\s_-]/g, '');
+      img.crossOrigin =
+        'anonymous';
 
-        // Acepta: Culata, Culata 1-2, culata_1_2, etc.
-        if(clave.indexOf('culata') !== -1){
-          var valor = item[claveOriginal];
+      img.onload =
+        function() {
+          LOGO_W =
+            img.naturalWidth;
 
-          if(
-            valor !== null &&
-            valor !== undefined &&
-            String(valor).trim() !== ''
-          ){
-            return String(valor).trim();
+          LOGO_H =
+            img.naturalHeight;
+
+          var canvas =
+            document.createElement(
+              'canvas'
+            );
+
+          canvas.width =
+            LOGO_W;
+
+          canvas.height =
+            LOGO_H;
+
+          canvas
+            .getContext('2d')
+            .drawImage(
+              img,
+              0,
+              0
+            );
+
+          try {
+            LOGO_DATA =
+              canvas.toDataURL(
+                'image/png'
+              );
+          } catch (error) {
+            LOGO_DATA = null;
           }
-        }
-      }
+
+          callback();
+        };
+
+      img.onerror =
+        function() {
+          callback();
+        };
+
+      img.src =
+        LOGO_URL;
     }
-  }
 
-  // Como respaldo, buscar en la información general
-  if(!c) return '';
 
-  var fuentes = [c, c.datos, c.cabecera, c.orden, c.registro];
+    /*
+     * CARGAR ORDEN AL ABRIR LA PÁGINA.
+     */
+    window.onload =
+      function() {
+        precargarLogo(
+          function() {}
+        );
 
-  for(var f = 0; f < fuentes.length; f++){
-    var obj = fuentes[f];
+        var folio =
+          getFolio();
 
-    if(!obj || typeof obj !== 'object' || Array.isArray(obj)) continue;
+        if (!folio) {
+          document.getElementById(
+            'msgBox'
+          ).innerHTML =
+            '<p class="msg-error">' +
+            '❌ No se proporcionó folio' +
+            '</p>' +
+            '<p style="' +
+            'margin-top:10px;' +
+            'font-size:13px' +
+            '">' +
+            'Usa: ?folio=XXXXXX' +
+            '</p>';
 
-    var clavesObj = Object.keys(obj);
-
-    for(var k = 0; k < clavesObj.length; k++){
-      var claveObj = String(clavesObj[k])
-        .trim()
-        .toLowerCase()
-        .replace(/[\s_-]/g, '');
-
-      if(claveObj.indexOf('culata') !== -1){
-        var valorObj = obj[clavesObj[k]];
-
-        if(
-          valorObj !== null &&
-          valorObj !== undefined &&
-          String(valorObj).trim() !== ''
-        ){
-          return String(valorObj).trim();
+          return;
         }
-      }
-    }
-  }
 
-  return '';
-}
-function escaparHtml(v){
-  return String(v===null||v===undefined?'':v)
-    .replace(/&/g,'&amp;')
-    .replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;')
-    .replace(/"/g,'&quot;')
-    .replace(/'/g,'&#039;');
-}
-function filtrarScope(c,scope){
-  if(!c || scope==='todo')return c;
-  var secs=c.secciones.filter(function(s){
-    return scope==='culatas'?esCulatas(s.titulo):!esCulatas(s.titulo);
-  });
-  var pe=(c.piezasExtras||[]).filter(function(p){
-    var cat=p.categoria||p.Categoria||'';
-    return scope==='culatas'?esCulatas(cat):!esCulatas(cat);
-  });
-  return Object.assign({},c,{secciones:secs,piezasExtras:pe});
-}
-function datosScope(){return filtrarScope(soloManoObra(cotData),SCOPE)}
-function setScope(s){
-  SCOPE=s;
-  ['todo','culatas','resto'].forEach(function(k){
-    document.getElementById('sc-'+k).className=(k===s?'on':'');
-  });
-  renderCotizacion(datosScope());
-}
-function sufijoScope(){return SCOPE==='todo'?'':SCOPE==='culatas'?'_Culatas':'_Motor'}
-function mostrarEstado(v){
-  if(v===null||v===undefined)return false;
-  var s=String(v).trim();
-  if(s==='')return false;
-  var n=parseFloat(s.replace(',','.'));
-  if(!isNaN(n))return n>0;
-  return true;
-}
-function piezasExtrasPendientes(c){
-  if(!c || !Array.isArray(c.piezasExtras))return [];
-  return c.piezasExtras.filter(function(p){
-    var a=p.auditado;
-    return a===false || a===undefined || a===null || String(a).trim()==='' || String(a).trim().toLowerCase()==='false' || String(a).trim().toLowerCase()==='no';
-  });
-}
-function agruparPiezasExtras(lista){
-  var grupos={},orden=[];
-  lista.forEach(function(p){
-    var cat=String(p.categoria||p.Categoria||'GENERAL').trim()||'GENERAL';
-    if(!grupos[cat]){grupos[cat]=[];orden.push(cat)}
-    grupos[cat].push(p);
-  });
-  return orden.map(function(c){return{categoria:c,items:grupos[c]}});
-}
-function renderCotizacion(c){
-  document.getElementById('cotFolio').textContent='#'+c.folio;
-  document.getElementById('cotCliente').textContent=c.cliente||'-';
-  document.getElementById('cotMotor').textContent=c.motor||'-';
-  var h='';
-  c.secciones.forEach(function(sec){
-    var tituloSec=sec.titulo||'';
-    var valorCulata=esCulatas(tituloSec)?obtenerValorCulata(c):'';
-    h+='<div class="s"><div class="st">'+escaparHtml(tituloSec);
-    if(valorCulata)h+='<span class="culata-val">'+escaparHtml(valorCulata)+'</span>';
-    h+='</div>';
-    sec.items.forEach(function(item){
-      var qty=item.manejaCantidad&&(item.cantidad||1)>1?'<span class="qty">'+item.cantidad+'×</span>':'';
-      h+='<div class="rw"><div class="rn">'+qty+item.nombre;
-      if(item.comentario)h+=' <span class="cm">— '+item.comentario+'</span>';
-      h+='</div></div>';
-      if(item.actividades && item.actividades.length>0){
-        item.actividades.forEach(function(a){
-          h+='<div class="rw" style="padding-left:16px;justify-content:flex-start"><div class="rn" style="flex:none;font-size:14px">• '+(a.actividad||'-')
-            +(a.medida?' <span class="chip chip-m">'+a.medida+'</span>':'')+'</div></div>';
-        });
-      }
-    });
-    h+='</div>';
-  });
-  var peG=agruparPiezasExtras(piezasExtrasPendientes(c));
-  if(peG.length>0){
-    h+='<div class="s"><div class="st pe">Piezas Extras</div>';
-    peG.forEach(function(g){
-      h+='<div class="pe-cat">'+g.categoria+'</div>';
-      g.items.forEach(function(p){
-        var qty=(p.cantidad||1)>1?'<span class="qty">'+p.cantidad+'×</span>':'';
-        var nota=p.notas||p.comentario||'';
-        h+='<div class="rw"><div class="rn">'+qty+(p.pieza||'-');
-        if(nota)h+=' <span class="cm">— '+nota+'</span>';
-        h+='</div><span class="chips">';
-        if(mostrarEstado(p.buenEstado))h+='<span class="chip chip-ok">✓ '+p.buenEstado+'</span>';
-        if(mostrarEstado(p.malEstado))h+='<span class="chip chip-bad">✗ '+p.malEstado+'</span>';
-        h+='</span></div>';
-      });
-    });
-    h+='</div>';
-  }
-  document.getElementById('cotBody').innerHTML=h;
-  document.getElementById('cotCard').style.display='block';
-}
-function descargarImagen(){
-  var c=datosScope();if(!c)return;
-  precargarLogo(function(){
-    var logoImg=new Image();
-    var dibujar=function(logoOk){
-      var W=600,S=2;
-      var canvas=document.createElement('canvas');canvas.width=W*S;canvas.height=4000*S;
-      var ctx=canvas.getContext('2d');ctx.scale(S,S);ctx.fillStyle='#ffffff';ctx.fillRect(0,0,W,4000);
-      var navy='#1a3057',red='#c8102e',bg='#edf1f7',gray='#7a8899',border='#dde3ec',ok='#065f46',okbg='#e1f5ee',bad='#991b1b',badbg='#fcebeb';
-      var M=24,y=0;
-      function fill(x,yy,w,h,col){ctx.fillStyle=col;ctx.fillRect(x,yy,w,h)}
-      function txt(t,x,yy,col,sz,bold,align){ctx.fillStyle=col;ctx.font=(bold?'bold ':'')+sz+'px -apple-system,system-ui,sans-serif';ctx.textAlign=align||'left';ctx.fillText(t+'',x,yy)}
-      function ln(x1,y1,x2,y2,col,w){ctx.strokeStyle=col;ctx.lineWidth=w||0.5;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.stroke()}
-      function medir(t,sz,bold){ctx.font=(bold?'bold ':'')+sz+'px -apple-system,system-ui,sans-serif';return ctx.measureText(String(t)).width}
-      function chipL(t,xLeft,yTop,fg,bgc){
-        var w=medir(t,13,true)+16,h=20;
-        ctx.fillStyle=bgc;
-        if(ctx.roundRect){ctx.beginPath();ctx.roundRect(xLeft,yTop,w,h,5);ctx.fill()}
-        else ctx.fillRect(xLeft,yTop,w,h);
-        txt(t,xLeft+8,yTop+15,fg,13,true);
-        return w;
-      }
-      function chipR(t,xRight,yTop,fg,bgc){
-        var w=medir(t,13,true)+16;
-        chipL(t,xRight-w,yTop,fg,bgc);
-        return w;
-      }
-      function wrapTxt(t,x,yTop,col,sz,bold,maxW,lh){
-        ctx.font=(bold?'bold ':'')+sz+'px -apple-system,system-ui,sans-serif';ctx.fillStyle=col;ctx.textAlign='left';
-        var words=String(t).split(' '),lines=[],line='';
-        for(var i=0;i<words.length;i++){
-          var test=line?line+' '+words[i]:words[i];
-          if(ctx.measureText(test).width>maxW&&line){lines.push(line);line=words[i]}else line=test;
-        }
-        if(line)lines.push(line);
-        for(var j=0;j<lines.length;j++)ctx.fillText(lines[j],x,yTop+j*lh);
-        return yTop+lines.length*lh;
-      }
-      var hdrH=88;
-      fill(0,y,W,hdrH,'#ffffff');fill(0,y+hdrH-3,W,3,navy);
-      if(logoOk){var logoH=54,logoW=(LOGO_W/LOGO_H)*logoH;ctx.drawImage(logoImg,M,y+(hdrH-logoH)/2,logoW,logoH)}
-      else{txt('TornoAuto',M,y+52,navy,30,true)}
-      txt('ORDEN DE TRABAJO',W-M,y+30,gray,12,false,'right');
-      txt('#'+c.folio,W-M,y+62,red,28,true,'right');
-      y+=hdrH;
-      fill(0,y,W,52,bg);ln(0,y+52,W,y+52,border);
-      txt('CLIENTE',M,y+18,navy,11,true);txt(c.cliente,M,y+40,'#1e2a3a',17,true);
-      ln(W/2,y,W/2,y+52,border);
-      txt('MOTOR',W/2+14,y+18,navy,11,true);txt(c.motor,W/2+14,y+40,'#1e2a3a',13,false);
-      y+=64;
-      c.secciones.forEach(function(sec){
-        var tituloSec=String(sec.titulo||'');
-        var tituloMay=tituloSec.toUpperCase();
-        var valorCulata=esCulatas(tituloSec)?obtenerValorCulata(c):'';
-        txt(tituloMay,M,y+12,red,15,true);
-        var anchoTitulo=medir(tituloMay,15,true);
-        ctx.fillStyle='#f09595';ctx.fillRect(M,y+17,anchoTitulo+6,2);
-        if(valorCulata)chipL(valorCulata,M+anchoTitulo+14,y-4,red,'#fff5f5');
-        y+=28;
-        sec.items.forEach(function(item){
-          var qty=item.manejaCantidad&&(item.cantidad||1)>1?item.cantidad+'× ':'';
-          var nom=qty+(item.nombre||'');
-          txt(nom,M,y+12,'#1e2a3a',15,false);
-          if(item.comentario){
-            var nw=medir(nom,15,false);
-            var maxC=W-M*2-nw-8;
-            if(medir('— '+item.comentario,12,false)<=maxC){
-              txt('— '+item.comentario,M+nw+8,y+12,gray,12,false);
-              y+=22;
-            }else{
-              y+=20;
-              y=wrapTxt('— '+item.comentario,M+8,y+10,gray,12,false,W-M*2-8,16)-10+8;
-            }
-          }else y+=22;
-          if(item.actividades && item.actividades.length>0){
-            item.actividades.forEach(function(a){
-              var nAct='• '+(a.actividad||'-');
-              txt(nAct,M+14,y+12,navy,13,false);
-              if(a.medida){
-                var wAct=medir(nAct,13,false);
-                chipL(a.medida,M+14+wAct+8,y-2,red,'#fff5f5');
+        fetch(
+          API_URL +
+          '?folio=' +
+          encodeURIComponent(
+            folio
+          )
+        )
+          .then(
+            function(respuesta) {
+              if (!respuesta.ok) {
+                throw new Error(
+                  'La API respondió con código ' +
+                  respuesta.status
+                );
               }
-              y+=22;
-            });
-            y+=2;
-          }
-        });
-        y+=12;
-      });
-      var peGrupos=agruparPiezasExtras(piezasExtrasPendientes(c));
-      if(peGrupos.length>0){
-        txt('PIEZAS EXTRAS',M,y+12,'#92400e',15,true);
-        ctx.fillStyle='#fac775';ctx.fillRect(M,y+17,medir('PIEZAS EXTRAS',15,true)+6,2);
-        y+=30;
-        peGrupos.forEach(function(g){
-          var catTxt=g.categoria.toUpperCase();
-          txt(catTxt,M,y+11,gray,11,true);
-          ln(M+medir(catTxt,11,true)+8,y+7,W-M,y+7,border,1);
-          y+=20;
-          g.items.forEach(function(p){
-            var hayOk=mostrarEstado(p.buenEstado),hayBad=mostrarEstado(p.malEstado);
-            var chipsW=0;
-            if(hayBad)chipsW+=medir('✗ '+p.malEstado,13,true)+16+5;
-            if(hayOk)chipsW+=medir('✓ '+p.buenEstado,13,true)+16+5;
-            var qty=(p.cantidad||1)>1?p.cantidad+'× ':'';
-            var nom=qty+(p.pieza||'-');
-            var yTop=y;
-            y=wrapTxt(nom,M,y+14,'#1e2a3a',15,false,W-M*2-chipsW,20)-14+4;
-            var xR=W-M;
-            if(hayBad)xR-=chipR('✗ '+p.malEstado,xR,yTop+2,bad,badbg)+5;
-            if(hayOk)chipR('✓ '+p.buenEstado,xR,yTop+2,ok,okbg);
-            var nota=p.notas||p.comentario||'';
-            if(nota){
-              var nomW=medir(nom,15,false);
-              var maxN=W-M*2-chipsW-nomW-8;
-              if(medir('— '+nota,12,false)<=maxN){
-                txt('— '+nota,M+nomW+8,yTop+14,gray,12,false);
-              }else{
-                y=wrapTxt('— '+nota,M+8,y+12,gray,12,false,W-M*2-8,16)-12+6;
+
+              return respuesta.json();
+            }
+          )
+          .then(
+            function(resultado) {
+              document.getElementById(
+                'msgBox'
+              ).style.display =
+                'none';
+
+              if (
+                resultado.success
+              ) {
+                cotData =
+                  ordenarCotizacion(
+                    resultado.cotizacion
+                  );
+
+                renderCotizacion(
+                  datosScope()
+                );
+              } else {
+                document.getElementById(
+                  'msgBox'
+                ).style.display =
+                  'block';
+
+                document.getElementById(
+                  'msgBox'
+                ).innerHTML =
+                  '<p class="msg-error">' +
+                  '❌ ' +
+                  escaparHtml(
+                    resultado.error ||
+                    'Error desconocido'
+                  ) +
+                  '</p>';
               }
             }
-            y+=10;
-          });
-          y+=6;
-        });
-        y+=4;
+          )
+          .catch(
+            function(error) {
+              document.getElementById(
+                'msgBox'
+              ).style.display =
+                'block';
+
+              document.getElementById(
+                'msgBox'
+              ).innerHTML =
+                '<p class="msg-error">' +
+                '❌ ' +
+                escaparHtml(
+                  error.message
+                ) +
+                '</p>';
+            }
+          );
+      };
+
+
+    /*
+     * CONVERTIR UN VALOR A NÚMERO
+     * PARA ORDENAR.
+     */
+    function numOrden(
+      valor,
+      fallback
+    ) {
+      var numero =
+        parseFloat(
+          String(
+            valor === null ||
+            valor === undefined
+              ? ''
+              : valor
+          ).replace(
+            ',',
+            '.'
+          )
+        );
+
+      return isNaN(numero)
+        ? fallback
+        : numero;
+    }
+
+
+    /*
+     * ORDENAR SECCIONES E ITEMS.
+     */
+    function ordenarCotizacion(
+      cotizacion
+    ) {
+      if (
+        !cotizacion ||
+        !Array.isArray(
+          cotizacion.secciones
+        )
+      ) {
+        return cotizacion;
       }
-      fill(0,y,W,26,bg);txt('Documento interno de trabajo · TornoAuto',W/2,y+17,gray,12,false,'center');y+=26;
-      var final=document.createElement('canvas');final.width=W*S;final.height=y*S;
-      final.getContext('2d').drawImage(canvas,0,0);
-      var link=document.createElement('a');
-      link.download='OrdenTrabajo_'+c.folio+sufijoScope()+'.png';link.href=final.toDataURL('image/png');link.click();
-    };
-    if(LOGO_DATA){logoImg.onload=function(){dibujar(true)};logoImg.onerror=function(){dibujar(false)};logoImg.src=LOGO_DATA}
-    else{dibujar(false)}
-  });
-}
-</script>
+
+      var copia =
+        Object.assign(
+          {},
+          cotizacion
+        );
+
+      copia.secciones =
+        cotizacion.secciones
+          .slice()
+          .sort(
+            function(a, b) {
+              var ordenA =
+                numOrden(
+                  a.ordenCategoria,
+                  9999
+                );
+
+              var ordenB =
+                numOrden(
+                  b.ordenCategoria,
+                  9999
+                );
+
+              if (
+                ordenA !== ordenB
+              ) {
+                return (
+                  ordenA -
+                  ordenB
+                );
+              }
+
+              return String(
+                a.titulo || ''
+              ).localeCompare(
+                String(
+                  b.titulo || ''
+                )
+              );
+            }
+          )
+          .map(
+            function(seccion) {
+              var copiaSeccion =
+                Object.assign(
+                  {},
+                  seccion
+                );
+
+              if (
+                Array.isArray(
+                  copiaSeccion.items
+                )
+              ) {
+                copiaSeccion.items =
+                  copiaSeccion.items
+                    .slice()
+                    .sort(
+                      function(a, b) {
+                        var ordenA =
+                          numOrden(
+                            a.ordenTarifa,
+                            9999
+                          );
+
+                        var ordenB =
+                          numOrden(
+                            b.ordenTarifa,
+                            9999
+                          );
+
+                        if (
+                          ordenA !==
+                          ordenB
+                        ) {
+                          return (
+                            ordenA -
+                            ordenB
+                          );
+                        }
+
+                        var nombreA =
+                          String(
+                            a.nombre ||
+                            a.repuesto ||
+                            a.nr ||
+                            ''
+                          );
+
+                        var nombreB =
+                          String(
+                            b.nombre ||
+                            b.repuesto ||
+                            b.nr ||
+                            ''
+                          );
+
+                        return nombreA
+                          .localeCompare(
+                            nombreB
+                          );
+                      }
+                    );
+              }
+
+              return copiaSeccion;
+            }
+          );
+
+      return copia;
+    }
+
+
+    /*
+     * MOSTRAR SOLAMENTE MANO DE OBRA.
+     *
+     * La sección de repuestos no aparece
+     * en la orden interna.
+     */
+    function soloManoObra(
+      cotizacion
+    ) {
+      if (!cotizacion) {
+        return null;
+      }
+
+      var secciones =
+        (
+          cotizacion.secciones ||
+          []
+        ).filter(
+          function(seccion) {
+            return (
+              seccion.tipo ===
+              'manoObra'
+            );
+          }
+        );
+
+      return Object.assign(
+        {},
+        cotizacion,
+        {
+          secciones:
+            secciones
+        }
+      );
+    }
+
+
+    /*
+     * IDENTIFICAR CATEGORÍA CULATAS.
+     */
+    function esCulatas(
+      texto
+    ) {
+      return /culata/i.test(
+        String(
+          texto || ''
+        )
+      );
+    }
+
+
+    /*
+     * LEER CULATA DE CADA ITEM.
+     */
+    function obtenerCulataItem(
+      item
+    ) {
+      if (!item) {
+        return '';
+      }
+
+      var valor =
+        item.culata;
+
+      if (
+        valor === null ||
+        valor === undefined
+      ) {
+        return '';
+      }
+
+      return String(
+        valor
+      ).trim();
+    }
+
+
+    /*
+     * ESCAPAR TEXTO PARA HTML.
+     */
+    function escaparHtml(
+      valor
+    ) {
+      return String(
+        valor === null ||
+        valor === undefined
+          ? ''
+          : valor
+      )
+        .replace(
+          /&/g,
+          '&amp;'
+        )
+        .replace(
+          /</g,
+          '&lt;'
+        )
+        .replace(
+          />/g,
+          '&gt;'
+        )
+        .replace(
+          /"/g,
+          '&quot;'
+        )
+        .replace(
+          /'/g,
+          '&#039;'
+        );
+    }
+
+
+    /*
+     * FILTRAR ENTRE TODO,
+     * CULATAS Y MOTOR.
+     */
+    function filtrarScope(
+      cotizacion,
+      scope
+    ) {
+      if (
+        !cotizacion ||
+        scope === 'todo'
+      ) {
+        return cotizacion;
+      }
+
+      var secciones =
+        (
+          cotizacion.secciones ||
+          []
+        ).filter(
+          function(seccion) {
+            if (
+              scope ===
+              'culatas'
+            ) {
+              return esCulatas(
+                seccion.titulo
+              );
+            }
+
+            return !esCulatas(
+              seccion.titulo
+            );
+          }
+        );
+
+      var piezasExtras =
+        (
+          cotizacion.piezasExtras ||
+          []
+        ).filter(
+          function(pieza) {
+            var categoria =
+              pieza.categoria ||
+              pieza.Categoria ||
+              '';
+
+            if (
+              scope ===
+              'culatas'
+            ) {
+              return esCulatas(
+                categoria
+              );
+            }
+
+            return !esCulatas(
+              categoria
+            );
+          }
+        );
+
+      return Object.assign(
+        {},
+        cotizacion,
+        {
+          secciones:
+            secciones,
+
+          piezasExtras:
+            piezasExtras
+        }
+      );
+    }
+
+
+    /*
+     * OBTENER INFORMACIÓN SEGÚN
+     * EL FILTRO ACTIVO.
+     */
+    function datosScope() {
+      return filtrarScope(
+        soloManoObra(
+          cotData
+        ),
+        SCOPE
+      );
+    }
+
+
+    /*
+     * CAMBIAR FILTRO.
+     */
+    function setScope(
+      scope
+    ) {
+      SCOPE =
+        scope;
+
+      [
+        'todo',
+        'culatas',
+        'resto'
+      ].forEach(
+        function(nombre) {
+          document.getElementById(
+            'sc-' + nombre
+          ).className =
+            nombre === scope
+              ? 'on'
+              : '';
+        }
+      );
+
+      renderCotizacion(
+        datosScope()
+      );
+    }
+
+
+    /*
+     * SUFIJO PARA EL NOMBRE
+     * DE LA IMAGEN.
+     */
+    function sufijoScope() {
+      if (
+        SCOPE === 'todo'
+      ) {
+        return '';
+      }
+
+      if (
+        SCOPE === 'culatas'
+      ) {
+        return '_Culatas';
+      }
+
+      return '_Motor';
+    }
+
+
+    /*
+     * VALIDAR ESTADO DE PIEZA EXTRA.
+     */
+    function mostrarEstado(
+      valor
+    ) {
+      if (
+        valor === null ||
+        valor === undefined
+      ) {
+        return false;
+      }
+
+      var texto =
+        String(valor).trim();
+
+      if (
+        texto === ''
+      ) {
+        return false;
+      }
+
+      var numero =
+        parseFloat(
+          texto.replace(
+            ',',
+            '.'
+          )
+        );
+
+      if (
+        !isNaN(numero)
+      ) {
+        return numero > 0;
+      }
+
+      return true;
+    }
+
+
+    /*
+     * MOSTRAR SOLO PIEZAS EXTRAS
+     * NO AUDITADAS.
+     */
+    function piezasExtrasPendientes(
+      cotizacion
+    ) {
+      if (
+        !cotizacion ||
+        !Array.isArray(
+          cotizacion.piezasExtras
+        )
+      ) {
+        return [];
+      }
+
+      return cotizacion
+        .piezasExtras
+        .filter(
+          function(pieza) {
+            var auditado =
+              pieza.auditado;
+
+            var texto =
+              String(
+                auditado === null ||
+                auditado === undefined
+                  ? ''
+                  : auditado
+              )
+                .trim()
+                .toLowerCase();
+
+            return (
+              auditado === false ||
+              auditado === undefined ||
+              auditado === null ||
+              texto === '' ||
+              texto === 'false' ||
+              texto === 'no' ||
+              texto === '0'
+            );
+          }
+        );
+    }
+
+
+    /*
+     * AGRUPAR PIEZAS EXTRAS
+     * POR CATEGORÍA.
+     */
+    function agruparPiezasExtras(
+      lista
+    ) {
+      var grupos = {};
+      var orden = [];
+
+      lista.forEach(
+        function(pieza) {
+          var categoria =
+            String(
+              pieza.categoria ||
+              pieza.Categoria ||
+              'GENERAL'
+            ).trim() ||
+            'GENERAL';
+
+          if (
+            !grupos[categoria]
+          ) {
+            grupos[categoria] =
+              [];
+
+            orden.push(
+              categoria
+            );
+          }
+
+          grupos[categoria]
+            .push(
+              pieza
+            );
+        }
+      );
+
+      return orden.map(
+        function(categoria) {
+          return {
+            categoria:
+              categoria,
+
+            items:
+              grupos[categoria]
+          };
+        }
+      );
+    }
+
+
+    /*
+     * RENDERIZAR LA ORDEN EN PANTALLA.
+     */
+    function renderCotizacion(
+      cotizacion
+    ) {
+      if (!cotizacion) {
+        return;
+      }
+
+      document.getElementById(
+        'cotFolio'
+      ).textContent =
+        '#' +
+        (
+          cotizacion.folio ||
+          '-'
+        );
+
+      document.getElementById(
+        'cotCliente'
+      ).textContent =
+        cotizacion.cliente ||
+        '-';
+
+      document.getElementById(
+        'cotMotor'
+      ).textContent =
+        cotizacion.motor ||
+        '-';
+
+      var html = '';
+
+
+      /*
+       * SECCIONES DE MANO DE OBRA.
+       */
+      (
+        cotizacion.secciones ||
+        []
+      ).forEach(
+        function(seccion) {
+          var tituloSeccion =
+            seccion.titulo ||
+            '';
+
+          html +=
+            '<div class="s">';
+
+          /*
+           * EL ENCABEZADO YA NO
+           * MUESTRA UNA CULATA GENERAL.
+           */
+          html +=
+            '<div class="st">' +
+            escaparHtml(
+              tituloSeccion
+            ) +
+            '</div>';
+
+
+          (
+            seccion.items ||
+            []
+          ).forEach(
+            function(item) {
+              var cantidadHtml =
+                item.manejaCantidad &&
+                (
+                  parseFloat(
+                    item.cantidad
+                  ) || 1
+                ) > 1
+
+                  ? (
+                    '<span class="qty">' +
+                    escaparHtml(
+                      item.cantidad
+                    ) +
+                    '×' +
+                    '</span>'
+                  )
+
+                  : '';
+
+
+              /*
+               * VALOR PROPIO DE
+               * CULATA 1-2 DE ESTA LÍNEA.
+               */
+              var culataLinea =
+                obtenerCulataItem(
+                  item
+                );
+
+
+              html +=
+                '<div class="rw">';
+
+              html +=
+                '<div class="rn">';
+
+              html +=
+                '<div class="concept-line">';
+
+              html +=
+                '<span class="concept-name">';
+
+              html +=
+                cantidadHtml;
+
+              html +=
+                escaparHtml(
+                  item.nombre ||
+                  '-'
+                );
+
+              html +=
+                '</span>';
+
+
+              /*
+               * MOSTRAR CULATA
+               * POR CADA CONCEPTO.
+               */
+              if (
+                culataLinea !== ''
+              ) {
+                html +=
+                  '<span class="chip chip-m">' +
+                  escaparHtml(
+                    culataLinea
+                  ) +
+                  '</span>';
+              }
+
+
+              /*
+               * COMENTARIO DE LA LÍNEA.
+               */
+              if (
+                item.comentario
+              ) {
+                html +=
+                  '<span class="cm">' +
+                  '— ' +
+                  escaparHtml(
+                    item.comentario
+                  ) +
+                  '</span>';
+              }
+
+              html +=
+                '</div>';
+
+              html +=
+                '</div>';
+
+              html +=
+                '</div>';
+
+
+              /*
+               * ACTIVIDADES DEL CONCEPTO.
+               */
+              if (
+                Array.isArray(
+                  item.actividades
+                ) &&
+                item.actividades.length >
+                0
+              ) {
+                item.actividades
+                  .forEach(
+                    function(actividad) {
+                      html +=
+                        '<div ' +
+                        'class="rw" ' +
+                        'style="' +
+                        'padding-left:16px;' +
+                        'justify-content:flex-start' +
+                        '"' +
+                        '>';
+
+                      html +=
+                        '<div ' +
+                        'class="rn" ' +
+                        'style="' +
+                        'flex:none;' +
+                        'font-size:14px' +
+                        '"' +
+                        '>';
+
+                      html +=
+                        '• ' +
+                        escaparHtml(
+                          actividad.actividad ||
+                          '-'
+                        );
+
+                      if (
+                        actividad.medida
+                      ) {
+                        html +=
+                          ' ' +
+                          '<span class="chip chip-m">' +
+                          escaparHtml(
+                            actividad.medida
+                          ) +
+                          '</span>';
+                      }
+
+                      html +=
+                        '</div>';
+
+                      html +=
+                        '</div>';
+                    }
+                  );
+              }
+            }
+          );
+
+          html +=
+            '</div>';
+        }
+      );
+
+
+      /*
+       * PIEZAS EXTRAS.
+       */
+      var gruposExtras =
+        agruparPiezasExtras(
+          piezasExtrasPendientes(
+            cotizacion
+          )
+        );
+
+      if (
+        gruposExtras.length > 0
+      ) {
+        html +=
+          '<div class="s">';
+
+        html +=
+          '<div class="st pe">' +
+          'Piezas Extras' +
+          '</div>';
+
+        gruposExtras.forEach(
+          function(grupo) {
+            html +=
+              '<div class="pe-cat">' +
+              escaparHtml(
+                grupo.categoria
+              ) +
+              '</div>';
+
+            grupo.items.forEach(
+              function(pieza) {
+                var cantidadExtra =
+                  (
+                    parseFloat(
+                      pieza.cantidad
+                    ) || 1
+                  ) > 1
+
+                    ? (
+                      '<span class="qty">' +
+                      escaparHtml(
+                        pieza.cantidad
+                      ) +
+                      '×' +
+                      '</span>'
+                    )
+
+                    : '';
+
+                var nota =
+                  pieza.notas ||
+                  pieza.comentario ||
+                  '';
+
+                html +=
+                  '<div class="rw">';
+
+                html +=
+                  '<div class="rn">';
+
+                html +=
+                  cantidadExtra;
+
+                html +=
+                  escaparHtml(
+                    pieza.pieza ||
+                    '-'
+                  );
+
+                if (nota) {
+                  html +=
+                    ' ' +
+                    '<span class="cm">' +
+                    '— ' +
+                    escaparHtml(
+                      nota
+                    ) +
+                    '</span>';
+                }
+
+                html +=
+                  '</div>';
+
+                html +=
+                  '<span class="chips">';
+
+                if (
+                  mostrarEstado(
+                    pieza.buenEstado
+                  )
+                ) {
+                  html +=
+                    '<span class="chip chip-ok">' +
+                    '✓ ' +
+                    escaparHtml(
+                      pieza.buenEstado
+                    ) +
+                    '</span>';
+                }
+
+                if (
+                  mostrarEstado(
+                    pieza.malEstado
+                  )
+                ) {
+                  html +=
+                    '<span class="chip chip-bad">' +
+                    '✗ ' +
+                    escaparHtml(
+                      pieza.malEstado
+                    ) +
+                    '</span>';
+                }
+
+                html +=
+                  '</span>';
+
+                html +=
+                  '</div>';
+              }
+            );
+          }
+        );
+
+        html +=
+          '</div>';
+      }
+
+
+      document.getElementById(
+        'cotBody'
+      ).innerHTML =
+        html;
+
+      document.getElementById(
+        'cotCard'
+      ).style.display =
+        'block';
+    }
+
+
+    /*
+     * DESCARGAR ORDEN COMO IMAGEN.
+     */
+    function descargarImagen() {
+      var cotizacion =
+        datosScope();
+
+      if (!cotizacion) {
+        return;
+      }
+
+      precargarLogo(
+        function() {
+          var logoImg =
+            new Image();
+
+          var dibujar =
+            function(logoCorrecto) {
+              var W = 600;
+              var escala = 2;
+
+              var canvas =
+                document.createElement(
+                  'canvas'
+                );
+
+              canvas.width =
+                W * escala;
+
+              canvas.height =
+                5000 * escala;
+
+              var ctx =
+                canvas.getContext(
+                  '2d'
+                );
+
+              ctx.scale(
+                escala,
+                escala
+              );
+
+              ctx.fillStyle =
+                '#ffffff';
+
+              ctx.fillRect(
+                0,
+                0,
+                W,
+                5000
+              );
+
+
+              var navy =
+                '#1a3057';
+
+              var red =
+                '#c8102e';
+
+              var bg =
+                '#edf1f7';
+
+              var gray =
+                '#7a8899';
+
+              var border =
+                '#dde3ec';
+
+              var ok =
+                '#065f46';
+
+              var okbg =
+                '#e1f5ee';
+
+              var bad =
+                '#991b1b';
+
+              var badbg =
+                '#fcebeb';
+
+
+              var margen = 24;
+              var y = 0;
+
+
+              function fill(
+                x,
+                yy,
+                ancho,
+                alto,
+                color
+              ) {
+                ctx.fillStyle =
+                  color;
+
+                ctx.fillRect(
+                  x,
+                  yy,
+                  ancho,
+                  alto
+                );
+              }
+
+
+              function txt(
+                texto,
+                x,
+                yy,
+                color,
+                tamano,
+                negrita,
+                alineacion
+              ) {
+                ctx.fillStyle =
+                  color;
+
+                ctx.font =
+                  (
+                    negrita
+                      ? 'bold '
+                      : ''
+                  ) +
+                  tamano +
+                  'px ' +
+                  '-apple-system,' +
+                  'system-ui,' +
+                  'sans-serif';
+
+                ctx.textAlign =
+                  alineacion ||
+                  'left';
+
+                ctx.fillText(
+                  String(texto),
+                  x,
+                  yy
+                );
+              }
+
+
+              function linea(
+                x1,
+                y1,
+                x2,
+                y2,
+                color,
+                ancho
+              ) {
+                ctx.strokeStyle =
+                  color;
+
+                ctx.lineWidth =
+                  ancho || 0.5;
+
+                ctx.beginPath();
+
+                ctx.moveTo(
+                  x1,
+                  y1
+                );
+
+                ctx.lineTo(
+                  x2,
+                  y2
+                );
+
+                ctx.stroke();
+              }
+
+
+              function medir(
+                texto,
+                tamano,
+                negrita
+              ) {
+                ctx.font =
+                  (
+                    negrita
+                      ? 'bold '
+                      : ''
+                  ) +
+                  tamano +
+                  'px ' +
+                  '-apple-system,' +
+                  'system-ui,' +
+                  'sans-serif';
+
+                return ctx
+                  .measureText(
+                    String(texto)
+                  )
+                  .width;
+              }
+
+
+              function chipIzquierda(
+                texto,
+                xIzquierda,
+                ySuperior,
+                colorTexto,
+                colorFondo
+              ) {
+                var ancho =
+                  medir(
+                    texto,
+                    13,
+                    true
+                  ) + 16;
+
+                var alto =
+                  20;
+
+                ctx.fillStyle =
+                  colorFondo;
+
+                if (
+                  ctx.roundRect
+                ) {
+                  ctx.beginPath();
+
+                  ctx.roundRect(
+                    xIzquierda,
+                    ySuperior,
+                    ancho,
+                    alto,
+                    5
+                  );
+
+                  ctx.fill();
+                } else {
+                  ctx.fillRect(
+                    xIzquierda,
+                    ySuperior,
+                    ancho,
+                    alto
+                  );
+                }
+
+                txt(
+                  texto,
+                  xIzquierda + 8,
+                  ySuperior + 15,
+                  colorTexto,
+                  13,
+                  true
+                );
+
+                return ancho;
+              }
+
+
+              function chipDerecha(
+                texto,
+                xDerecha,
+                ySuperior,
+                colorTexto,
+                colorFondo
+              ) {
+                var ancho =
+                  medir(
+                    texto,
+                    13,
+                    true
+                  ) + 16;
+
+                chipIzquierda(
+                  texto,
+                  xDerecha - ancho,
+                  ySuperior,
+                  colorTexto,
+                  colorFondo
+                );
+
+                return ancho;
+              }
+
+
+              function wrapTxt(
+                texto,
+                x,
+                ySuperior,
+                color,
+                tamano,
+                negrita,
+                anchoMaximo,
+                interlineado
+              ) {
+                ctx.font =
+                  (
+                    negrita
+                      ? 'bold '
+                      : ''
+                  ) +
+                  tamano +
+                  'px ' +
+                  '-apple-system,' +
+                  'system-ui,' +
+                  'sans-serif';
+
+                ctx.fillStyle =
+                  color;
+
+                ctx.textAlign =
+                  'left';
+
+                var palabras =
+                  String(texto)
+                    .split(' ');
+
+                var lineas = [];
+                var lineaActual = '';
+
+                for (
+                  var i = 0;
+                  i < palabras.length;
+                  i++
+                ) {
+                  var prueba =
+                    lineaActual
+                      ? (
+                        lineaActual +
+                        ' ' +
+                        palabras[i]
+                      )
+                      : palabras[i];
+
+                  if (
+                    ctx
+                      .measureText(
+                        prueba
+                      )
+                      .width >
+                      anchoMaximo &&
+                    lineaActual
+                  ) {
+                    lineas.push(
+                      lineaActual
+                    );
+
+                    lineaActual =
+                      palabras[i];
+                  } else {
+                    lineaActual =
+                      prueba;
+                  }
+                }
+
+                if (
+                  lineaActual
+                ) {
+                  lineas.push(
+                    lineaActual
+                  );
+                }
+
+                for (
+                  var j = 0;
+                  j < lineas.length;
+                  j++
+                ) {
+                  ctx.fillText(
+                    lineas[j],
+                    x,
+                    ySuperior +
+                    j *
+                    interlineado
+                  );
+                }
+
+                return (
+                  ySuperior +
+                  lineas.length *
+                  interlineado
+                );
+              }
+
+
+              /*
+               * ENCABEZADO.
+               */
+              var altoEncabezado =
+                88;
+
+              fill(
+                0,
+                y,
+                W,
+                altoEncabezado,
+                '#ffffff'
+              );
+
+              fill(
+                0,
+                y +
+                altoEncabezado -
+                3,
+                W,
+                3,
+                navy
+              );
+
+              if (
+                logoCorrecto
+              ) {
+                var altoLogo =
+                  54;
+
+                var anchoLogo =
+                  (
+                    LOGO_W /
+                    LOGO_H
+                  ) *
+                  altoLogo;
+
+                ctx.drawImage(
+                  logoImg,
+                  margen,
+                  y +
+                  (
+                    altoEncabezado -
+                    altoLogo
+                  ) /
+                  2,
+                  anchoLogo,
+                  altoLogo
+                );
+              } else {
+                txt(
+                  'TornoAuto',
+                  margen,
+                  y + 52,
+                  navy,
+                  30,
+                  true
+                );
+              }
+
+              txt(
+                'ORDEN DE TRABAJO',
+                W - margen,
+                y + 30,
+                gray,
+                12,
+                false,
+                'right'
+              );
+
+              txt(
+                '#' +
+                cotizacion.folio,
+                W - margen,
+                y + 62,
+                red,
+                28,
+                true,
+                'right'
+              );
+
+              y +=
+                altoEncabezado;
+
+
+              /*
+               * CLIENTE Y MOTOR.
+               */
+              fill(
+                0,
+                y,
+                W,
+                62,
+                bg
+              );
+
+              linea(
+                0,
+                y + 62,
+                W,
+                y + 62,
+                border
+              );
+
+              txt(
+                'CLIENTE',
+                margen,
+                y + 18,
+                navy,
+                11,
+                true
+              );
+
+              wrapTxt(
+                cotizacion.cliente ||
+                '-',
+                margen,
+                y + 39,
+                '#1e2a3a',
+                15,
+                true,
+                W / 2 -
+                margen -
+                14,
+                17
+              );
+
+              linea(
+                W / 2,
+                y,
+                W / 2,
+                y + 62,
+                border
+              );
+
+              txt(
+                'MOTOR',
+                W / 2 + 14,
+                y + 18,
+                navy,
+                11,
+                true
+              );
+
+              wrapTxt(
+                cotizacion.motor ||
+                '-',
+                W / 2 + 14,
+                y + 38,
+                '#1e2a3a',
+                12,
+                false,
+                W / 2 -
+                margen -
+                14,
+                15
+              );
+
+              y +=
+                74;
+
+
+              /*
+               * MANO DE OBRA.
+               */
+              (
+                cotizacion.secciones ||
+                []
+              ).forEach(
+                function(seccion) {
+                  var tituloSeccion =
+                    String(
+                      seccion.titulo ||
+                      ''
+                    );
+
+                  var tituloMayusculas =
+                    tituloSeccion
+                      .toUpperCase();
+
+                  /*
+                   * EL ENCABEZADO YA NO
+                   * LLEVA CULATA GENERAL.
+                   */
+                  txt(
+                    tituloMayusculas,
+                    margen,
+                    y + 12,
+                    red,
+                    15,
+                    true
+                  );
+
+                  var anchoTitulo =
+                    medir(
+                      tituloMayusculas,
+                      15,
+                      true
+                    );
+
+                  ctx.fillStyle =
+                    '#f09595';
+
+                  ctx.fillRect(
+                    margen,
+                    y + 17,
+                    anchoTitulo + 6,
+                    2
+                  );
+
+                  y +=
+                    28;
+
+
+                  (
+                    seccion.items ||
+                    []
+                  ).forEach(
+                    function(item) {
+                      var cantidad =
+                        item.manejaCantidad &&
+                        (
+                          parseFloat(
+                            item.cantidad
+                          ) || 1
+                        ) > 1
+
+                          ? (
+                            item.cantidad +
+                            '× '
+                          )
+
+                          : '';
+
+                      var nombre =
+                        cantidad +
+                        (
+                          item.nombre ||
+                          ''
+                        );
+
+                      var culataLinea =
+                        obtenerCulataItem(
+                          item
+                        );
+
+                      var comentario =
+                        item.comentario
+                          ? (
+                            '— ' +
+                            item.comentario
+                          )
+                          : '';
+
+                      var anchoChip =
+                        culataLinea
+                          ? (
+                            medir(
+                              culataLinea,
+                              13,
+                              true
+                            ) +
+                            16
+                          )
+                          : 0;
+
+                      var separacionChip =
+                        culataLinea
+                          ? 8
+                          : 0;
+
+                      var anchoNombreMaximo =
+                        W -
+                        margen *
+                        2 -
+                        anchoChip -
+                        separacionChip;
+
+                      var yInicio =
+                        y;
+
+                      var yFinalNombre =
+                        wrapTxt(
+                          nombre,
+                          margen,
+                          y + 14,
+                          '#1e2a3a',
+                          15,
+                          false,
+                          anchoNombreMaximo,
+                          20
+                        );
+
+                      /*
+                       * DIBUJAR CULATA POR
+                       * CADA LÍNEA.
+                       */
+                      if (
+                        culataLinea
+                      ) {
+                        chipDerecha(
+                          culataLinea,
+                          W - margen,
+                          yInicio + 1,
+                          red,
+                          '#fff5f5'
+                        );
+                      }
+
+                      y =
+                        Math.max(
+                          y + 22,
+                          yFinalNombre -
+                          14 +
+                          8
+                        );
+
+                      /*
+                       * COMENTARIO.
+                       */
+                      if (
+                        comentario
+                      ) {
+                        y =
+                          wrapTxt(
+                            comentario,
+                            margen + 8,
+                            y + 10,
+                            gray,
+                            12,
+                            false,
+                            W -
+                            margen *
+                            2 -
+                            8,
+                            16
+                          ) -
+                          10 +
+                          8;
+                      }
+
+
+                      /*
+                       * ACTIVIDADES.
+                       */
+                      if (
+                        Array.isArray(
+                          item.actividades
+                        ) &&
+                        item.actividades
+                          .length >
+                        0
+                      ) {
+                        item.actividades
+                          .forEach(
+                            function(
+                              actividad
+                            ) {
+                              var nombreActividad =
+                                '• ' +
+                                (
+                                  actividad.actividad ||
+                                  '-'
+                                );
+
+                              txt(
+                                nombreActividad,
+                                margen + 14,
+                                y + 12,
+                                navy,
+                                13,
+                                false
+                              );
+
+                              if (
+                                actividad.medida
+                              ) {
+                                var anchoActividad =
+                                  medir(
+                                    nombreActividad,
+                                    13,
+                                    false
+                                  );
+
+                                chipIzquierda(
+                                  actividad.medida,
+                                  margen +
+                                  14 +
+                                  anchoActividad +
+                                  8,
+                                  y - 2,
+                                  red,
+                                  '#fff5f5'
+                                );
+                              }
+
+                              y +=
+                                22;
+                            }
+                          );
+
+                        y +=
+                          2;
+                      }
+                    }
+                  );
+
+                  y +=
+                    12;
+                }
+              );
+
+
+              /*
+               * PIEZAS EXTRAS.
+               */
+              var gruposExtras =
+                agruparPiezasExtras(
+                  piezasExtrasPendientes(
+                    cotizacion
+                  )
+                );
+
+              if (
+                gruposExtras.length >
+                0
+              ) {
+                txt(
+                  'PIEZAS EXTRAS',
+                  margen,
+                  y + 12,
+                  '#92400e',
+                  15,
+                  true
+                );
+
+                ctx.fillStyle =
+                  '#fac775';
+
+                ctx.fillRect(
+                  margen,
+                  y + 17,
+                  medir(
+                    'PIEZAS EXTRAS',
+                    15,
+                    true
+                  ) + 6,
+                  2
+                );
+
+                y +=
+                  30;
+
+                gruposExtras.forEach(
+                  function(grupo) {
+                    var categoria =
+                      String(
+                        grupo.categoria ||
+                        ''
+                      )
+                        .toUpperCase();
+
+                    txt(
+                      categoria,
+                      margen,
+                      y + 11,
+                      gray,
+                      11,
+                      true
+                    );
+
+                    linea(
+                      margen +
+                      medir(
+                        categoria,
+                        11,
+                        true
+                      ) +
+                      8,
+                      y + 7,
+                      W - margen,
+                      y + 7,
+                      border,
+                      1
+                    );
+
+                    y +=
+                      20;
+
+                    grupo.items.forEach(
+                      function(pieza) {
+                        var hayBueno =
+                          mostrarEstado(
+                            pieza.buenEstado
+                          );
+
+                        var hayMalo =
+                          mostrarEstado(
+                            pieza.malEstado
+                          );
+
+                        var anchoChips =
+                          0;
+
+                        if (
+                          hayMalo
+                        ) {
+                          anchoChips +=
+                            medir(
+                              '✗ ' +
+                              pieza.malEstado,
+                              13,
+                              true
+                            ) +
+                            16 +
+                            5;
+                        }
+
+                        if (
+                          hayBueno
+                        ) {
+                          anchoChips +=
+                            medir(
+                              '✓ ' +
+                              pieza.buenEstado,
+                              13,
+                              true
+                            ) +
+                            16 +
+                            5;
+                        }
+
+                        var cantidad =
+                          (
+                            parseFloat(
+                              pieza.cantidad
+                            ) || 1
+                          ) > 1
+
+                            ? (
+                              pieza.cantidad +
+                              '× '
+                            )
+
+                            : '';
+
+                        var nombre =
+                          cantidad +
+                          (
+                            pieza.pieza ||
+                            '-'
+                          );
+
+                        var ySuperior =
+                          y;
+
+                        y =
+                          wrapTxt(
+                            nombre,
+                            margen,
+                            y + 14,
+                            '#1e2a3a',
+                            15,
+                            false,
+                            W -
+                            margen *
+                            2 -
+                            anchoChips,
+                            20
+                          ) -
+                          14 +
+                          4;
+
+                        var xDerecha =
+                          W - margen;
+
+                        if (
+                          hayMalo
+                        ) {
+                          xDerecha -=
+                            chipDerecha(
+                              '✗ ' +
+                              pieza.malEstado,
+                              xDerecha,
+                              ySuperior +
+                              2,
+                              bad,
+                              badbg
+                            ) +
+                            5;
+                        }
+
+                        if (
+                          hayBueno
+                        ) {
+                          chipDerecha(
+                            '✓ ' +
+                            pieza.buenEstado,
+                            xDerecha,
+                            ySuperior +
+                            2,
+                            ok,
+                            okbg
+                          );
+                        }
+
+                        var nota =
+                          pieza.notas ||
+                          pieza.comentario ||
+                          '';
+
+                        if (
+                          nota
+                        ) {
+                          y =
+                            wrapTxt(
+                              '— ' +
+                              nota,
+                              margen + 8,
+                              y + 12,
+                              gray,
+                              12,
+                              false,
+                              W -
+                              margen *
+                              2 -
+                              8,
+                              16
+                            ) -
+                            12 +
+                            6;
+                        }
+
+                        y +=
+                          10;
+                      }
+                    );
+
+                    y +=
+                      6;
+                  }
+                );
+
+                y +=
+                  4;
+              }
+
+
+              /*
+               * PIE DE PÁGINA.
+               */
+              fill(
+                0,
+                y,
+                W,
+                26,
+                bg
+              );
+
+              txt(
+                'Documento interno de trabajo · TornoAuto',
+                W / 2,
+                y + 17,
+                gray,
+                12,
+                false,
+                'center'
+              );
+
+              y +=
+                26;
+
+
+              /*
+               * RECORTAR CANVAS.
+               */
+              var final =
+                document.createElement(
+                  'canvas'
+                );
+
+              final.width =
+                W * escala;
+
+              final.height =
+                y * escala;
+
+              final
+                .getContext('2d')
+                .drawImage(
+                  canvas,
+                  0,
+                  0
+                );
+
+
+              /*
+               * DESCARGAR.
+               */
+              var enlace =
+                document.createElement(
+                  'a'
+                );
+
+              enlace.download =
+                'OrdenTrabajo_' +
+                cotizacion.folio +
+                sufijoScope() +
+                '.png';
+
+              enlace.href =
+                final.toDataURL(
+                  'image/png'
+                );
+
+              enlace.click();
+            };
+
+
+          if (LOGO_DATA) {
+            logoImg.onload =
+              function() {
+                dibujar(true);
+              };
+
+            logoImg.onerror =
+              function() {
+                dibujar(false);
+              };
+
+            logoImg.src =
+              LOGO_DATA;
+          } else {
+            dibujar(false);
+          }
+        }
+      );
+    }
+
+  </script>
+
 </body>
 </html>
