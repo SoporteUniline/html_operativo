@@ -160,21 +160,72 @@ function soloManoObra(c){
   return Object.assign({},c,{secciones:secs});
 }
 function esCulatas(t){return /culata/i.test(String(t||''))}
-function obtenerValorCulata(c){
-  if(!c)return '';
-  var fuentes=[c,c.datos,c.cabecera,c.orden,c.registro];
-  for(var i=0;i<fuentes.length;i++){
-    var obj=fuentes[i];
-    if(!obj || typeof obj!=='object' || Array.isArray(obj))continue;
-    var claves=Object.keys(obj);
-    for(var j=0;j<claves.length;j++){
-      var clave=String(claves[j]).trim().toLowerCase();
-      if(clave==='culata'){
-        var valor=obj[claves[j]];
-        if(valor!==null && valor!==undefined && String(valor).trim()!=='')return String(valor).trim();
+function obtenerValorCulata(c, sec){
+  // Primero buscar dentro de los conceptos de la sección
+  if(sec && Array.isArray(sec.items)){
+    for(var i = 0; i < sec.items.length; i++){
+      var item = sec.items[i];
+
+      if(!item || typeof item !== 'object') continue;
+
+      var claves = Object.keys(item);
+
+      for(var j = 0; j < claves.length; j++){
+        var claveOriginal = claves[j];
+
+        var clave = String(claveOriginal)
+          .trim()
+          .toLowerCase()
+          .replace(/[\s_-]/g, '');
+
+        // Acepta: Culata, Culata 1-2, culata_1_2, etc.
+        if(clave.indexOf('culata') !== -1){
+          var valor = item[claveOriginal];
+
+          if(
+            valor !== null &&
+            valor !== undefined &&
+            String(valor).trim() !== ''
+          ){
+            return String(valor).trim();
+          }
+        }
       }
     }
   }
+
+  // Como respaldo, buscar en la información general
+  if(!c) return '';
+
+  var fuentes = [c, c.datos, c.cabecera, c.orden, c.registro];
+
+  for(var f = 0; f < fuentes.length; f++){
+    var obj = fuentes[f];
+
+    if(!obj || typeof obj !== 'object' || Array.isArray(obj)) continue;
+
+    var clavesObj = Object.keys(obj);
+
+    for(var k = 0; k < clavesObj.length; k++){
+      var claveObj = String(clavesObj[k])
+        .trim()
+        .toLowerCase()
+        .replace(/[\s_-]/g, '');
+
+      if(claveObj.indexOf('culata') !== -1){
+        var valorObj = obj[clavesObj[k]];
+
+        if(
+          valorObj !== null &&
+          valorObj !== undefined &&
+          String(valorObj).trim() !== ''
+        ){
+          return String(valorObj).trim();
+        }
+      }
+    }
+  }
+
   return '';
 }
 function escaparHtml(v){
